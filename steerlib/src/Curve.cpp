@@ -65,18 +65,30 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 // Sort controlPoints vector in ascending order: min-first
 void Curve::sortControlPoints()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function sortControlPoints is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
-
+	quickSort(controlPoints, 0, controlPoints.size());
 	return;
 }
-
+void quickSort(const std::vector<CurvePoint>& vec, int part1, int part2) {
+	int r;
+	if (p < q) {
+		r = partitation(vec, part1, part2);
+		quickSort(vec, part1, r);
+		quickSort(vec, r + 1, part2);
+	}
+}
+int partitation(const std::vector<CurvePoint>& vec, int part1, int part2) {
+	float temp = vec[part1].time;
+	int x = part1;
+	int y;
+	for (j = part1;j < part2; j++) {
+		if (vec[j].time <= temp) {
+			x = x + 1;
+			std::swap(vec[i], vec[j]);
+		}
+	}
+	std::swap(vec[i], vec[j]);
+	return i;
+}
 // Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
 // Note that this function should return false if the end of the curve is reached, or no next point can be found
 bool Curve::calculatePoint(Point& outputPoint, float time)
@@ -110,30 +122,25 @@ bool Curve::calculatePoint(Point& outputPoint, float time)
 // Check Roboustness
 bool Curve::checkRobust()
 {
-	//================DELETE THIS PART AND THEN START CODING===================
 	if (controlPoints.size() < 2)
 		return false;
-	return true;
-	//=========================================================================
-
-
 	return true;
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function findTimeInterval is not implemented!" << std::endl;
-		flag = true;
+	if (controlPoints[0].time == time) {
+		nextPoint = 0;
+		return true;
 	}
-	//=========================================================================
-
-
-	return true;
+	for (int x = 0;x < controlPoints.size();x++) {
+		if ((controlPoints[x].time < time) && (controlPoints[x + 1].time >= time)) {
+			nextPoint = i + 1;
+			return true;
+		}
+	}
+	return false;
 }
 
 // Implement Hermite curve
