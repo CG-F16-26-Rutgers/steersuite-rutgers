@@ -139,22 +139,16 @@ bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 // Implement Hermite curve
 Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 {
-	Point newPosition;
-	float normalTime, intervalTime;
-
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function useHermiteCurve is not implemented!" << std::endl;
-		flag = true;
-	}
-	//=========================================================================
+	float intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
+	float normalTime = (time - controlPoints[nextPoint - 1].time) / (intervalTime);
 
 	// Calculate position at t = time on Hermite curve
-
+	Point a = (2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1) * controlPoints[nextPoint - 1].position;
+	Vector b = (pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime) * controlPoints[nextPoint - 1].tangent;
+	Point c = (-2 * pow(normalTime, 3) + 3 * pow(normalTime, 2)) * controlPoints[nextPoint].position;
+	Vector d = (pow(normalTime, 3) - pow(normalTime, 2)) * controlPoints[nextPoint].tangent;
 	// Return result
-	return newPosition;
+	return a + b + c + d;
 }
 
 // Implement Catmull-Rom curve
