@@ -125,24 +125,22 @@ bool Curve::checkRobust()
 	if (controlPoints.size() < 2)
 		return false;
 	return true;
-
-	return true;
 }
 
 // Find the current time interval (i.e. index of the next control point to follow according to current time)
 bool Curve::findTimeInterval(unsigned int& nextPoint, float time)
 {
-	//================DELETE THIS PART AND THEN START CODING===================
-	static bool flag = false;
-	if (!flag)
-	{
-		std::cerr << "ERROR>>>>Member function findTimeInterval is not implemented!" << std::endl;
-		flag = true;
+	if (controlPoints[0].time == time) {
+		nextPoint = 0;
+		return true;
 	}
-	//=========================================================================
-
-
-	return true;
+	for (int x = 0;x < controlPoints.size();x++) {
+		if ((controlPoints[x].time < time) && (controlPoints[x + 1].time >= time)) {
+			nextPoint = i + 1;
+			return true;
+		}
+	}
+	return false;
 }
 
 // Implement Hermite curve
