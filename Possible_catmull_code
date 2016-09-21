@@ -1,0 +1,20 @@
+Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
+{
+	Point newPosition;
+	float slope, intervalTime;
+	intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
+
+	if (nextPoint-1 == 0)
+	{
+		slope = (2 * (controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / intervalTime) - ((controlPoints[nextPoint + 1].position - controlPoints[nextPosition - 1].position) / 2 * intervalTime);
+	}
+	else
+	{
+		slope = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (2 * intervalTime);
+	}
+
+	newPosition = controlPoints[nextPoint].position*slope*intervalTime;
+	return newPosition;
+}
+
+// Code for catmull curve
