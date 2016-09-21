@@ -196,6 +196,11 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 			(controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time));
 	}
 
-	newPosition = controlPoints[nextPoint - 1].position + (s*normalTime);
-	return newPosition;
+	// Calculate position at t = time on Hermite curve
+	Point a = (2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1) * controlPoints[nextPoint - 1].position;
+	Vector b = (pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime) * s * intervalTime;
+	Point c = (-2 * pow(normalTime, 3) + 3 * pow(normalTime, 2)) * controlPoints[nextPoint].position;
+	Vector d = (pow(normalTime, 3) - pow(normalTime, 2)) * s * intervalTime;
+	// Return result
+	return a + b + c + d;
 }
