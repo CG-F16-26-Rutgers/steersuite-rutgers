@@ -62,25 +62,20 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 #endif
 }
 
-// Sort controlPoints vector in ascending order: min-first
-void Curve::sortControlPoints()
-{
-	quickSort(controlPoints, 0, controlPoints.size());
-	return;
-}
 void quickSort(const std::vector<CurvePoint>& vec, int part1, int part2) {
 	int r;
-	if (p < q) {
-		r = partitation(vec, part1, part2);
+	if (part1 < part2) {
+		r = partition(vec, part1, part2);
 		quickSort(vec, part1, r);
 		quickSort(vec, r + 1, part2);
 	}
 }
-int partitation(const std::vector<CurvePoint>& vec, int part1, int part2) {
+
+int partition(const std::vector<CurvePoint>& vec, int part1, int part2) {
 	float temp = vec[part1].time;
 	int x = part1;
 	int j;
-	for (j = part1;j < part2; j++) {
+	for (j = part1; j < part2; j++) {
 		if (vec[j].time <= temp) {
 			x = x + 1;
 			std::swap(vec[x], vec[j]);
@@ -89,6 +84,14 @@ int partitation(const std::vector<CurvePoint>& vec, int part1, int part2) {
 	std::swap(vec[x], vec[j]);
 	return x;
 }
+
+// Sort controlPoints vector in ascending order: min-first
+void Curve::sortControlPoints()
+{
+	quickSort(controlPoints, 0, controlPoints.size());
+	return;
+}
+
 // Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
 // Note that this function should return false if the end of the curve is reached, or no next point can be found
 bool Curve::calculatePoint(Point& outputPoint, float time)
