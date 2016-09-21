@@ -53,21 +53,23 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 
 	// Move on the curve from t=0 to t=finalPoint, using window as step size, and linearly interpolate the curve points
 	Point EP;
-	for (unsigned int x = 0; x < controlPoints.size()-1; x++)
+	Point SP;
+	for (unsigned int x = 1; x < controlPoints.size(); x++)
 	{
-		for (float CurrTime = controlPoints[x].time; CurrTime <= controlPoints[x + 1].time; CurrTime += (float)window)
+		SP = controlPoints[i - 1].position;
+		for (float CurrTime = controlPoints[x-1].time; CurrTime <= controlPoints[x].time; CurrTime += (float)window)
 		{
 			if (type == hermiteCurve)
 			{
-				EP = useHermiteCurve(x + 1, CurrTime);
+				EP = useHermiteCurve(x, CurrTime);
 			}
 			else if (type == catmullCurve)
 			{
-				EP = useCatmullCurve(x + 1, CurrTime);
+				EP = useCatmullCurve(x, CurrTime);
 			}
 
-			DrawLib::drawLine(controlPoints[x].position, EP, curveColor, curveThickness);
-			controlPoints[x].position = EP;
+			DrawLib::drawLine(SP, EP, curveColor, curveThickness);
+			SP = EP;
 		}
 	}
 	return;
