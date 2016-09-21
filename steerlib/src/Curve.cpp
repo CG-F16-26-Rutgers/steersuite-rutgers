@@ -79,15 +79,15 @@ void quickSort(const std::vector<CurvePoint>& vec, int part1, int part2) {
 int partitation(const std::vector<CurvePoint>& vec, int part1, int part2) {
 	float temp = vec[part1].time;
 	int x = part1;
-	int y;
+	int j;
 	for (j = part1;j < part2; j++) {
 		if (vec[j].time <= temp) {
 			x = x + 1;
-			std::swap(vec[i], vec[j]);
+			std::swap(vec[x], vec[j]);
 		}
 	}
-	std::swap(vec[i], vec[j]);
-	return i;
+	std::swap(vec[x], vec[j]);
+	return x;
 }
 // Calculate the position on curve corresponding to the given time, outputPoint is the resulting position
 // Note that this function should return false if the end of the curve is reached, or no next point can be found
