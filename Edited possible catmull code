@@ -29,7 +29,8 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 			((controlPoints[nextPoint-1].time - controlPoints[nextPoint-2]) / (controlPoints[nextPoint].time - controlPoints[nextPoint-1].time) *
 			(controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time));
 	}
-
+	
+	// Not sure how to calculate new position, need newPosition.x, newPosition.y, and newPosition.z?
 	newPosition = controlPoints[nextPoint-1].position+(s*normalTime);
 	return newPosition;
 }
