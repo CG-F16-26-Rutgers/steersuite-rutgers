@@ -5,6 +5,7 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
 	normalTime = (time - controlPoints[nextPoint - 1].time) / (intervalTime);
 
+	// For start point
 	if (nextPoint-1 == 0)
 	{
 		s = ((controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
@@ -12,12 +13,21 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 			((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
 			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time));
 	}
-	else
+	// Middle Points
+	else if (nextPoint!=controlPoints.size()-1)
 	{
 		s = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
 			(controlPoints[nextPoint+1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint+1].time - controlPoints[nextPoint].time)) +
 			((controlPoints[nextPoint+1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
 			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));;
+	}
+	// End point
+	else
+	{
+		s= ((controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint-1].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint-1].time-controlPoints[nextPoint-2].time)) -
+			((controlPoints[nextPoint-1].time - controlPoints[nextPoint-2]) / (controlPoints[nextPoint].time - controlPoints[nextPoint-1].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time));
 	}
 
 	newPosition = controlPoints[nextPoint-1].position+(s*normalTime);
