@@ -1,36 +1,57 @@
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
-	Point newPosition;
+	Point newPosition, a, c;
 	float intervalTime, normalTime;
-	Vector s;
+	Vector b, d, s1, s2;
+
 	intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
 	normalTime = (time - controlPoints[nextPoint - 1].time) / (intervalTime);
+
+	a = (2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1) * controlPoints[nextPoint - 1].position;
+	c = (-2 * pow(normalTime, 3) + 3 * pow(normalTime, 2)) * controlPoints[nextPoint].position;
 
 	// For start point
 	if (nextPoint-1 == 0)
 	{
-		s = ((controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
+		s1 = ((controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
 			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime)) -
 			((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
 			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time));
+
+		s2 = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
+			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time)) +
+			((controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));
 	}
 	// Middle Points
 	else if (nextPoint!=controlPoints.size()-1)
 	{
-		s = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
+		s1 = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
 			(controlPoints[nextPoint+1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint+1].time - controlPoints[nextPoint].time)) +
 			((controlPoints[nextPoint+1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
-			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));;
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));
+		s2 = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
+			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time)) +
+			((controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));
 	}
 	// End point
 	else
 	{
-		s= ((controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint-1].time) *
+		s1 = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
+			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time)) +
+			((controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));
+
+		s2 = ((controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint-1].time) *
 			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint-1].time-controlPoints[nextPoint-2].time)) -
 			((controlPoints[nextPoint-1].time - controlPoints[nextPoint-2].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint-1].time) *
 			(controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time));
 	}
 
-	newPosition = controlPoints[nextPoint-1].position+(s*normalTime);
+	b = (pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime) * s1;
+	d = (pow(normalTime, 3) - pow(normalTime, 2)) * s2;
+
+	newPosition = a + b + c + d;
 	return newPosition;
 }
