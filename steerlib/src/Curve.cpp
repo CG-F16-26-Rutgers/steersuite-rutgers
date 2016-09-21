@@ -62,16 +62,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 #endif
 }
 
-void quickSort(const std::vector<CurvePoint>& vec, int part1, int part2) {
-	int r;
-	if (part1 < part2) {
-		r = partition(vec, part1, part2);
-		quickSort(vec, part1, r);
-		quickSort(vec, r + 1, part2);
-	}
-}
-
-int partition(const std::vector<CurvePoint>& vec, int part1, int part2) {
+int parting(const std::vector<CurvePoint>& vec, int part1, int part2) {
 	float temp = vec[part1].time;
 	int x = part1;
 	int j;
@@ -83,6 +74,15 @@ int partition(const std::vector<CurvePoint>& vec, int part1, int part2) {
 	}
 	std::swap(vec[x], vec[j]);
 	return x;
+}
+
+void quickSort(const std::vector<CurvePoint>& vec, int part1, int part2) {
+	int r;
+	if (part1 < part2) {
+		r = parting(vec, part1, part2);
+		quickSort(vec, part1, r);
+		quickSort(vec, r + 1, part2);
+	}
 }
 
 // Sort controlPoints vector in ascending order: min-first
