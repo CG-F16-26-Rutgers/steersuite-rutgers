@@ -7,11 +7,17 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 
 	if (nextPoint-1 == 0)
 	{
-		s = (2 * (controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / normalTime) - ((controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (2 * normalTime));
+		s = ((controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time)) -
+			((controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
+			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time));
 	}
 	else
 	{
-		s = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (2 * normalTime);
+		s = ((controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
+			(controlPoints[nextPoint+1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint+1].time - controlPoints[nextPoint].time)) +
+			((controlPoints[nextPoint+1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint-1].time) *
+			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time));;
 	}
 
 	newPosition = controlPoints[nextPoint-1].position+(s*normalTime);
