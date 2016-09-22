@@ -160,6 +160,7 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
 	Vector a1, b2;
 
+	//Tangent calculations
 	if (nextPoint == 1) {
 		a1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time);
 		b2 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time);
@@ -178,6 +179,6 @@ Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 	float f2 = (-2 * pow(t, 3)) + (3 * pow(t, 2));
 	float f3 = (pow(t, 3)) - (2 * pow(t, 2)) + t;
 	float f4 = (pow(t, 3)) - (pow(t, 2));
-
+	
 	return (f1 * controlPoints[nextPoint - 1].position) + (f2*controlPoints[nextPoint].position) + (f3*a1* (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time)) + (f4*b2* (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time));
 }
