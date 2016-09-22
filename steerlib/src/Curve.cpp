@@ -56,7 +56,7 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 	Point SP;
 	for (unsigned int x = 1; x < controlPoints.size(); x++)
 	{
-		SP = controlPoints[i - 1].position;
+		SP = controlPoints[x - 1].position;
 		for (float CurrTime = controlPoints[x-1].time; CurrTime <= controlPoints[x].time; CurrTime += (float)window)
 		{
 			if (type == hermiteCurve)
@@ -158,42 +158,26 @@ Point Curve::useHermiteCurve(const unsigned int nextPoint, const float time)
 // Implement Catmull-Rom curve
 Point Curve::useCatmullCurve(const unsigned int nextPoint, const float time)
 {
-	Point newPosition;
-	float intervalTime, normalTime;
-	Vector s;
-	intervalTime = controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time;
-	normalTime = (time - controlPoints[nextPoint - 1].time) / (intervalTime);
+	Vector a1, b2;
 
-	// For start point
-	if (nextPoint - 1 == 0)
-	{
-		s = ((controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
-			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime)) -
-			((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) *
-			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time));
+	if (nextPoint == 1) {
+		a1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time);
+		b2 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time);
 	}
-	// Middle Points
-	else if (nextPoint != controlPoints.size() - 1)
-	{
-		s = ((intervalTime) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
-			(controlPoints[nextPoint + 1].position - controlPoints[nextPoint].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time)) +
-			((controlPoints[nextPoint + 1].time - controlPoints[nextPoint].time) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time) *
-			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (intervalTime));;
+	else if (nextPoint == controlPoints.size() - 1) {
+		a1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time);
+		b2 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time);
 	}
-	// End point
-	else
-	{
-		s = ((controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time) *
-			(controlPoints[nextPoint].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint - 1].time - controlPoints[nextPoint - 2].time)) -
-			((controlPoints[nextPoint - 1].time - controlPoints[nextPoint - 2].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time) *
-			(controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time));
+	else {
+		a1 = (controlPoints[nextPoint].position - controlPoints[nextPoint - 2].position) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 2].time);
+		b2 = (controlPoints[nextPoint + 1].position - controlPoints[nextPoint - 1].position) / (controlPoints[nextPoint + 1].time - controlPoints[nextPoint - 1].time);
 	}
+	//blender functions based on time
+	float t = (time - controlPoints[nextPoint - 1].time) / (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time);
+	float f1 = (2 * pow(t, 3)) - (3 * pow(t, 2)) + 1;
+	float f2 = (-2 * pow(t, 3)) + (3 * pow(t, 2));
+	float f3 = (pow(t, 3)) - (2 * pow(t, 2)) + t;
+	float f4 = (pow(t, 3)) - (pow(t, 2));
 
-	// Calculate position at t = time on Hermite curve
-	Point a = (2 * pow(normalTime, 3) - 3 * pow(normalTime, 2) + 1) * controlPoints[nextPoint - 1].position;
-	Vector b = (pow(normalTime, 3) - 2 * pow(normalTime, 2) + normalTime) * s * intervalTime;
-	Point c = (-2 * pow(normalTime, 3) + 3 * pow(normalTime, 2)) * controlPoints[nextPoint].position;
-	Vector d = (pow(normalTime, 3) - pow(normalTime, 2)) * s * intervalTime;
-	// Return result
-	return a + b + c + d;
+	return (f1 * controlPoints[nextPoint - 1].position) + (f2*controlPoints[nextPoint].position) + (f3*a1* (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time)) + (f4*b2* (controlPoints[nextPoint].time - controlPoints[nextPoint - 1].time));
 }
