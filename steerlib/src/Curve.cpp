@@ -75,7 +75,9 @@ void Curve::drawCurve(Color curveColor, float curveThickness, int window)
 	return;
 #endif
 }
-
+bool isEqual(CurvePoint x, CurvePoint y) {
+	return x.time == y.time;
+}
 bool compare(CurvePoint x, CurvePoint y) {
 	return x.time < y.time;
 }
@@ -83,6 +85,7 @@ bool compare(CurvePoint x, CurvePoint y) {
 void Curve::sortControlPoints()
 {
 	std::sort(Curve::controlPoints.begin(), Curve::controlPoints.end(), compare);
+	controlPoints.erase(std::unique(controlPoints.begin(), controlPoints.end(), isEqual), controlPoints.end());
 	return;
 }
 
